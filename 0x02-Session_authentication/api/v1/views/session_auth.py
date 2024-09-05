@@ -56,3 +56,17 @@ def session_auth_login():
     response.set_cookie(session_name, session_id)
 
     return response
+
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
+def session_auth_logout():
+    """
+    Route to log out (delete the session).
+    """
+    # Attempt to destroy the session
+    if not auth.destroy_session(request):
+        abort(404)
+
+    # Return an empty JSON dictionary with status code 200 if successful
+    return jsonify({}), 200
