@@ -4,6 +4,7 @@ The authentication module.
 """
 from flask import request
 from typing import List, TypeVar
+from os import getenv
 
 
 class Auth:
@@ -45,3 +46,25 @@ class Auth:
     def current_user(self, request=None) -> TypeVar('User'):
         """current_user method: that was helpful wasnt it?"""
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Retrieves the session cookie value from the request.
+
+        Args:
+            request: The Flask request object.
+
+        Returns:
+            The value of the session cookie or None if not found.
+        """
+        if request is None:
+            return None
+
+        # Retrieve the session name from the environment variable
+        session_name = getenv('SESSION_NAME')
+
+        if session_name is None:
+            return None
+
+        # Return the session cookie value if present
+        return request.cookies.get(session_name)
