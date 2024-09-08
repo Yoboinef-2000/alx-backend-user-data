@@ -6,7 +6,6 @@ from typing import List, Tuple
 import os
 import re
 import mysql.connector
-from mysql.connector import connection
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -66,7 +65,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> connection.MySQLConnection:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     Connects to the MySQL database using credentials
     stored in environment variables."""
@@ -78,7 +77,7 @@ def get_db() -> connection.MySQLConnection:
     database = os.getenv("PERSONAL_DATA_DB_NAME")
 
     # Establish and return the connection to the database
-    return mysql.connector.connect(
+    return mysql.connector.connection.MySQLConnection(
         user=username,
         password=passy,
         host=host,
