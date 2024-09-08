@@ -83,3 +83,38 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         host=host,
         database=database
     )
+
+
+def main():
+    """Main function to retrieve and log user data from the database."""
+    db = get_db()
+    cursor = db.cursor()
+
+    # Execute the query to retrieve all rows from the users table
+    cursor.execute("SELECT * FROM users")
+
+    # Get the column names (assuming the users table
+    # columns match the PII_FIELDS)
+    columns = [desc[0] for desc in cursor.description]
+
+    logger = get_logger()
+
+    # Iterate through each row in the result set
+    for row in cursor.fetchall():
+        # Create a dictionary mapping columns to values
+        row_dict = dict(zip(columns, row))
+
+        # Convert the dictionary to a log message string
+        log_message = "; ".join(f"{key}={value}"
+                                for key, value in row_dict.items()) + ";"
+
+        # Log the message using the logger
+        logger.info(log_message)
+
+    # Close the cursor and database connection
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
