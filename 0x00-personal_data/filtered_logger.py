@@ -32,3 +32,34 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(self.fields,
                                   self.REDACTION, record.msg, self.SEPARATOR)
         return super().format(record)
+
+
+PII_FIELDS: Tuple[str] = ('name', 'email', 'phone', 'ssn', 'password')
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and returns a logger object
+    that obfuscates sensitive information.
+    """
+
+    # Create a logger with the name 'user_data'
+    logger = logging.getLogger("user_data")
+
+    # Set the logger level to INFO
+    logger.setLevel(logging.INFO)
+
+    # Ensure it does not propagate messages to other loggers
+    logger.propagate = False
+
+    # Create a StreamHandler for logging to the console
+    handler = logging.StreamHandler()
+
+    # Use the RedactingFormatter to format the logs and obfuscate PII fields
+    formatter = RedactingFormatter(PII_FIELDS)
+    handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(handler)
+
+    return logger
