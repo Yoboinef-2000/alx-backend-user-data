@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
-from sqlalchemy import create_engine, tuple_
-from sqlalchemy.orm.session import Session, tuple_
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
+"""DB module
+"""
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from user import User, Base
+from sqlalchemy.orm.session import Session
+
+from user import Base
+
 
 
 class DB:
