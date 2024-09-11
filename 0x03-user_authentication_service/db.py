@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from user import User  # Assuming you already have the User model defined
 
 
@@ -35,3 +37,16 @@ class DB:
 
         # Return the newly created user
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """Finds a user by arbitrary keyword arguments."""
+        try:
+            # Dynamically build the query using filter_by and the **kwargs
+            user = self._session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:
+            # Raise NoResultFound if no results were found
+            raise NoResultFound("No user found with the provided criteria.")
+        except InvalidRequestError:
+            # Raise InvalidRequestError if the query arguments are invalid
+            raise InvalidRequestError("Invalid query arguments.")
