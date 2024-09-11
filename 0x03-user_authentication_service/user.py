@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Class User.
+"""Class User - This Module is going to be all about it.
 """
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -9,7 +9,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    """User class.
+    """User class. This classs will have a users table.
     """
     __tablename__ = 'users'
 
