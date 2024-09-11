@@ -40,34 +40,13 @@ class DB:
 
     def find_user_by(self, **kwargs) -> User:
         """Finds a user by arbitrary keyword arguments."""
-        fields, values = [], []
-        for k, v in kwargs.items():
-            if hasattr(User, k):
-                fields.append(getattr(User, k))
-                values.append(v)
-            else:
-                raise InvalidRequestError()
-        result = self._session.query(User).filter(
-            tuple_(*fields).in_([tuple(values)])
-        ).first()
-        if result is None:
-            raise NoResultFound()
-        return result
-
-    def update_user(self, user_id: int, **kwargs) -> None:
-        """Updating a user.
-        """
-        user = self.find_user_by(id=user_id)
-        if user is None:
-            return
-        update_source = {}
-        for key, value in kwargs.items():
-            if hasattr(User, key):
-                update_source[getattr(User, key)] = value
-            else:
-                raise ValueError()
-        self._session.query(User).filter(User.id == user_id).update(
-            update_source,
-            synchronize_session=False,
-        )
-        self._session.commit()
+        try:
+            # Dynamically build the query using filter_by and the **kwargs
+            user = self._session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:
+            # Raise NoResultFound if no results were found
+            raise NoResultFound("No user found with the provided criteria.")
+        except InvalidRequestError:
+            # Raise InvalidRequestError if the query arguments are invalid
+            raise InvalidRequestError("Invalid query arguments.")
