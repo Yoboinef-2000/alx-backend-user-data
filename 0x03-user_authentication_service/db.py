@@ -3,7 +3,8 @@
 from sqlalchemy.orm.session import Session, tuple_
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
-from user import User  # Assuming you already have the User model defined
+from sqlalchemy.orm import sessionmaker
+from user import User, Base
 
 
 class DB:
