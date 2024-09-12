@@ -56,14 +56,14 @@ class Auth:
         Returns:
             bool: True if login is valid, False otherwise.
         """
+        user = None
         try:
-            # Find user by email
             user = self._db.find_user_by(email=email)
-
-            # If user exists, check password using bcrypt.checkpw
-            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
-                return True
-
+            if user is not None:
+                return bcrypt.checkpw(
+                    password.encode("utf-8"),
+                    user.hashed_password,
+                )
         except NoResultFound:
-            # If no user is found, return False
             return False
+        return False
