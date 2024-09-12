@@ -46,3 +46,24 @@ class Auth:
 
             # Return the created User object
             return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validate login by checking email and password.
+        Args:
+            email (str): The email of the user.
+            password (str): The plain text password to verify.
+        Returns:
+            bool: True if login is valid, False otherwise.
+        """
+        try:
+            # Find user by email
+            user = self._db.find_user_by(email=email)
+
+            # If user exists, check password using bcrypt.checkpw
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+
+        except NoResultFound:
+            # If no user is found, return False
+            return False
