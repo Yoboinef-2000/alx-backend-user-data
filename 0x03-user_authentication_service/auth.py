@@ -43,32 +43,21 @@ class Auth:
     """Auth class to interact with the authentication database."""
 
     def __init__(self):
+        """Initializes a new Auth instance.
+        """
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
-        """Register a new user with email and hashed password."""
+        """Adds a new user to the database.
+        """
         try:
-            # Check if a user with the given email already exists
             self._db.find_user_by(email=email)
-            raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            # If the user does not exist, hash the password
-            hashed_password = self._hash_password(password)
-
-            # Add the user to the database
-            new_user = self._db.add_user(email, hashed_password)
-
-            # Return the created User object
-            return new_user
+            return self._db.add_user(email, _hash_password(password))
+        raise ValueError("User {} already exists".format(email))
 
     def valid_login(self, email: str, password: str) -> bool:
-        """
-        Validate login by checking email and password.
-        Args:
-            email (str): The email of the user.
-            password (str): The plain text password to verify.
-        Returns:
-            bool: True if login is valid, False otherwise.
+        """Checks if a user's login details are valid.
         """
         user = None
         try:
@@ -83,23 +72,21 @@ class Auth:
         return False
 
     def create_session(self, email: str) -> str:
+        """Creates a new session for a user.
         """
-        Create a new session for a user with the given email.
-        Args:
-            email (str): The email of the user.
-        Returns:
-            str: The session ID if the user exists, otherwise None.
-        """
+        user = None
         try:
             user = self._db.find_user_by(email=email)
-        except Exception:
+        except NoResultFound:
+            return None
+        if user is None:
             return None
         session_id = _generate_uuid()
         self._db.update_user(user.id, session_id=session_id)
         return session_id
-    
+
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
-        """User Retriever.
+        """Retrieves a user based on a given session ID.
         """
         user = None
         if session_id is None:
@@ -111,14 +98,14 @@ class Auth:
         return user
 
     def destroy_session(self, user_id: int) -> None:
-        """Session Destroyer.
+        """Destroys a session associated with a given user.
         """
         if user_id is None:
             return None
         self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> str:
-        """Reset password generator.
+        """Generates a password reset token for a user.
         """
         user = None
         try:
