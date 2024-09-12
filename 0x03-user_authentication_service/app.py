@@ -9,13 +9,13 @@ app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
-def welcome():
+def index() -> str:
     """Returns a JSON response with a welcome message."""
     return jsonify({"message": "Bienvenue"})
 
 
 @app.route("/users", methods=["POST"])
-def users():
+def users() -> str:
     """
     POST /users route to register a new user.
     Expects 'email' and 'password' form data.
