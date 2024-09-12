@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""The Auth Module.
+"""The Auth Module
 """
 
 import bcrypt
-from db import DB
-from sqlalchemy.orm.exc import NoResultFound
-from user import User
 from uuid import uuid4
 from typing import Union
+from sqlalchemy.orm.exc import NoResultFound
+
+from db import DB
+from user import User
 
 
 def _hash_password(password: str) -> bytes:
