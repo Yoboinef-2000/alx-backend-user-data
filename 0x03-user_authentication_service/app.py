@@ -4,7 +4,6 @@
 from flask import Flask, jsonify, request
 from auth import Auth
 
-AUTH = Auth()
 app = Flask(__name__)
 
 
@@ -12,8 +11,6 @@ app = Flask(__name__)
 def welcome():
     """Returns a JSON response with a welcome message."""
     return jsonify({"message": "Bienvenue"})
-
-
 
 
 if __name__ == "__main__":
