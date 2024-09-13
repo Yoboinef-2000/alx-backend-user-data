@@ -55,5 +55,33 @@ def login():
     return response
 
 
+@app.route("/reset_password", methods=["PUT"])
+def update_password():
+    """
+    Update the user's password after verifying the reset token.
+    Responds to the PUT /reset_password route.
+    Expects form data with 'email', 'reset_token', and 'new_password'.
+    """
+    # Get the form data from the request
+    email = request.form.get("email")
+    reset_token = request.form.get("reset_token")
+    new_password = request.form.get("new_password")
+
+    # Check if any of the required fields are missing
+    if not email or not reset_token or not new_password:
+        abort(400, "Missing email, reset token, or new password")
+
+    try:
+        # Attempt to update the user's password using the Auth service
+        AUTH.update_password(email, reset_token, new_password)
+
+        # If successful, return a JSON response with a 200 status code
+        return jsonify({"email": email, "message": "Password updated"}), 200
+
+    except ValueError:
+        # If the reset token is invalid, respond with a 403 status code
+        return jsonify({"message": "Invalid reset token"}), 403
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
