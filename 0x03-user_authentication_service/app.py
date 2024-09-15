@@ -69,7 +69,7 @@ def login():
 
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
-def logout():
+def logout() -> str:
     """
     DELETE /sessions route to log out a user by clearing their session.
     Expects the session ID in a cookie with key 'session_id'.
