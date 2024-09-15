@@ -119,5 +119,32 @@ def profile():
     return jsonify({"email": user.email}), 200
 
 
+@app.route('/reset_password', methods=['POST'], strict_slashes=False)
+def get_reset_password_token():
+    """
+    POST /reset_password route to generate a reset password token.
+    Expects 'email' in form data.
+    """
+    # Get the 'email' from form data
+    email = request.form.get('email')
+
+    # If no email is provided, respond with a 400 error
+    if not email:
+        return abort(400, "Email field is missing")
+
+    # Try to find the user by email
+    user = AUTH.get_user_by_email(email)
+
+    if not user:
+        # If no user is found, return a 403 error
+        return abort(403)
+
+    # Generate the reset password token
+    reset_token = AUTH.get_reset_password_token(email)
+
+    # Return the reset token with a 200 status
+    return jsonify({"email": email, "reset_token": reset_token}), 200
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
