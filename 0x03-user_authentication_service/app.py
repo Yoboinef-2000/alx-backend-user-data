@@ -16,6 +16,30 @@ def welcome():
     return jsonify({"message": "Bienvenue"})
 
 
+@app.route('/users', methods=['POST'], strict_slashes=False)
+def register_user():
+    """
+    POST /users route to register a new user.
+    Expects 'email' and 'password' in form data.
+    """
+    # Get the 'email' and 'password' from the form data
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    # Check if email and password are provided
+    if not email or not password:
+        return jsonify({"message": "Missing email or password"}), 400
+
+    try:
+        # Try to register the user using AUTH.register_user
+        user = AUTH.register_user(email, password)
+        # Return the success message
+        return jsonify({"email": user.email, "message": "user created"}), 201
+    except ValueError:
+        # If the user already exists, return a 400 error
+        return jsonify({"message": "email already registered"}), 400
+
+
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login():
     """
